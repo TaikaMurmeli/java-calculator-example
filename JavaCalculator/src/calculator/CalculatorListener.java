@@ -7,7 +7,6 @@ package calculator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JButton;
 
@@ -15,7 +14,7 @@ import javax.swing.JButton;
  *
  * @author Sami
  */
-public class ButtonListener implements ActionListener {
+public class CalculatorListener implements ActionListener {
     
     private CalculatorGUI calculatorGUI;
     private Map<String, JButton> buttons;
@@ -23,8 +22,8 @@ public class ButtonListener implements ActionListener {
     private String input = "";
     private String tempInput = "";
     private String previousOperation = "";
-
-    public ButtonListener(CalculatorGUI calculatorGUI) {
+    
+    public CalculatorListener(CalculatorGUI calculatorGUI) {
         this.calculatorGUI = calculatorGUI;
         buttons = calculatorGUI.getButtons();
     }
@@ -32,7 +31,7 @@ public class ButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         String button = getClickedButton(ae);
         setFirstFactor();
-        if(buttonIsNumber(button)) {
+        if(isANumber(button)) {
             input += button;
             tempInput += button;
             calculatorGUI.setInputText(input);   
@@ -51,9 +50,9 @@ public class ButtonListener implements ActionListener {
         return clickedButton;
     }
     
-    private boolean buttonIsNumber(String button) {
+    private boolean isANumber(String string) {
         try {
-            Integer.parseInt(button);
+            Double.parseDouble(string);
             return true;
         } catch (Exception e) {
             //Not a number button
@@ -69,12 +68,16 @@ public class ButtonListener implements ActionListener {
         try {
             int i = Integer.parseInt(input);
             result = i;
-            System.out.println(result);
         } catch (Exception e) {
         }
     }
     
-    private void applyOperation(String operation) {     
+    private void updateInputAndOutput(String operation) { 
+        //prevent stacking operators
+        if(!input.isEmpty())
+            if(!isANumber(""+input.charAt(input.length()-1))) 
+                return;
+        
         if (operation.equals("C")) {
             input = "";
             result = 0;
@@ -83,7 +86,6 @@ public class ButtonListener implements ActionListener {
         }
         
         tempInput = "";
-        previousOperation = operation;
         
         calculatorGUI.setInputText(input);
         calculatorGUI.setResultText("" + result);
@@ -94,10 +96,12 @@ public class ButtonListener implements ActionListener {
     }
     
     private void performOperation(String button) {
-        //if the previous button clicked was a number we may update the result 
+//        if the previous button clicked was a number,
+//        we may update the result.
         if (!tempInput.isEmpty()) {
             result = Calculator.calculate(previousOperation, result, Double.parseDouble(tempInput));
         }
-        buttons.forEach((k,v) -> {if(k.equals(button)) applyOperation(button);});
+        buttons.forEach((k,v) -> {if(k.equals(button)) updateInputAndOutput(button);});
+        previousOperation = button;
     }
 }

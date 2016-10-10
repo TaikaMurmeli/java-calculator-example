@@ -34,7 +34,7 @@ public class CalculatorGUI extends JFrame {
             "*",
             "/",
             "=");
-    private ButtonListener buttonListener = new ButtonListener(this);
+    private CalculatorListener calculatorListener = new CalculatorListener(this);
 
     public CalculatorGUI() {
         JPanel numberPanel = new JPanel();
@@ -68,6 +68,13 @@ public class CalculatorGUI extends JFrame {
     }
     
     public void setResultText(String result) {
+        try {
+            double resultValue = Double.parseDouble(result);
+            if(resultValue % 1 == 0) {
+                result = "" + (int)resultValue;
+            }
+        } catch (Exception e) {
+        }
         resultText.setText(result);
     }
 
@@ -82,7 +89,7 @@ public class CalculatorGUI extends JFrame {
     private void createButton(String name, JPanel panel) {
         JButton button = new JButton(name);
         buttons.put(name, button);
-        button.addActionListener(buttonListener);
+        button.addActionListener(calculatorListener);
         panel.add(button);
     }
 }
