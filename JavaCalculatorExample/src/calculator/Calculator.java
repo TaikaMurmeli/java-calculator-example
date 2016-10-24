@@ -1,11 +1,15 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package calculator;
 
 /**
  *
  * @author Sami
  */
-public class Calculator {   
+public class Calculator {
     
     /**
      *@param operation the math operation to calculate given by symbolic string i.e. "+" 

@@ -1,10 +1,15 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package calculator;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +28,7 @@ public class CalculatorGUI extends JFrame {
     private JTextField resultText = new JTextField();
     private JTextField inputText = new JTextField();
     private Map<String, JButton> buttons = new HashMap<String, JButton>();
-    private List<String> operatorButtonSymbols = Arrays.asList(
+    private List<String> operatorButtonNames = Arrays.asList(
             "+",
             "-",
             "*",
@@ -33,13 +38,14 @@ public class CalculatorGUI extends JFrame {
 
     public CalculatorGUI() {
         JPanel numberPanel = new JPanel();
+        JPanel textPanel = new JPanel();
         JPanel operatorPanel = new JPanel();
 
         numberPanel.setLayout(new GridLayout(4, 3));
         operatorPanel.setLayout(new GridLayout(5, 1));
 
-        setTextFieldProperties(inputText);
-        setTextFieldProperties(resultText);
+        resultText.setEditable(false);
+        inputText.setEditable(false);
 
         addButtons(numberPanel, operatorPanel);
 
@@ -50,22 +56,22 @@ public class CalculatorGUI extends JFrame {
         mainPanel.add(operatorPanel, BorderLayout.EAST);
         mainPanel.add(resultText, BorderLayout.SOUTH);
 
-        this.add(mainPanel);
+        add(mainPanel);
     }
 
     public Map<String, JButton> getButtons() {
         return buttons;
     }
-
+    
     public void setInputText(String input) {
         inputText.setText(input);
     }
-
+    
     public void setResultText(String result) {
         try {
             double resultValue = Double.parseDouble(result);
-            if (resultValue % 1 == 0) {
-                result = "" + (long) resultValue;
+            if(resultValue % 1 == 0) {
+                result = "" + (int)resultValue;
             }
         } catch (Exception e) {
         }
@@ -73,26 +79,17 @@ public class CalculatorGUI extends JFrame {
     }
 
     private void addButtons(JPanel numberPanel, JPanel operatorPanel) {
-        for (int i = 1; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             createButton("" + i, numberPanel);
         }
-        createButton("0", numberPanel);
         createButton("C", numberPanel);
-        createButton(".", numberPanel);
-        operatorButtonSymbols.forEach((symbol) -> createButton(symbol, operatorPanel));
+        operatorButtonNames.forEach((bname) -> createButton(bname, operatorPanel));
     }
-
+    
     private void createButton(String name, JPanel panel) {
         JButton button = new JButton(name);
-        button.setPreferredSize(new Dimension(100, 100));
         buttons.put(name, button);
         button.addActionListener(calculatorListener);
         panel.add(button);
-    }
-
-    private void setTextFieldProperties(JTextField textField) {
-        textField.setEditable(false);
-        textField.setPreferredSize(new Dimension(100, 100));
-        textField.setFont(new Font("Arial", Font.PLAIN, 40));
     }
 }
